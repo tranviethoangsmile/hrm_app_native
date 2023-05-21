@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -6,129 +6,102 @@ import {
   StatusBar,
   useColorScheme,
   StyleSheet,
-  TouchableOpacity,
+  ScrollView,
 } from 'react-native';
-
+import TopBarInfo from '../components/topBarInfo';
+import AiIcon from '../components/aiIcon';
 const Home = (): JSX.Element => {
   const isDarkMode = useColorScheme() === 'dark';
-  const [number, setNumber] = useState(0);
-  const handleNumber = () => {
-    setNumber(number + 1);
-  };
-
-  useEffect(() => {
-    console.log('M...M..');
-    return () => {
-      console.log('cancel');
-    };
-  });
   return (
     <SafeAreaView style={styles.areaView}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <View style={styles.container}>
-        <View style={styles.homePageView}>
-          <View style={styles.homeMenuTop}>
-            <View style={styles.homeMenuTopItemNum}>
-              <Text style={styles.homeMenuTopItemText}>{number}</Text>
-            </View>
-            <View style={styles.homeMenuTopItemBtn}>
-              <TouchableOpacity onPress={handleNumber}>
-                <Text style={styles.homeMenuTopItemBtnText}>Click</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.homeMenuMedium}>
-            <Text>OK</Text>
-          </View>
-          <View style={styles.homeMenuBottom}>
-            <Text>OK</Text>
-          </View>
+        <TopBarInfo />
+        <View>
+          <ScrollView>
+            <Text>
+              ok Lorem ipsum, or lipsum as it is sometimes known, is dummy text
+              used in laying out print, graphic or web designs. The passage is
+              attributed to an unknown typesetter in the 15th century who is
+              thought to have scrambled parts of Cicero's De Finibus Bonorum et
+              Malorum for use in a type specimen book. It usually begins with:
+              “Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.” The
+              purpose of lorem ipsum is to create a natural looking block of
+              text (sentence, paragraph, page, etc.) that doesn't distract from
+              the layout. A practice not without controversy, laying out pages
+              with meaningless filler text can be very useful when the focus is
+              meant to be on design, not content. The passage experienced a
+              surge in popularity during the 1960s when Letraset used it on
+              their dry-transfer sheets, and again during the 90s as desktop
+              publishers bundled the text with their software. Today it's seen
+              all around the web; on templates, websites, and stock designs. Use
+              our generator to get your own, or read on for the authoritative
+              history of lorem ipsum. Lorem ipsum, or lipsum as it is sometimes
+              known, is dummy text used in laying out print, graphic or web
+              designs. The passage is attributed to an unknown typesetter in the
+              15th century who is thought to have scrambled parts of Cicero's De
+              Finibus Bonorum et Malorum for use in a type specimen book. It
+              usually begins with: “Lorem ipsum dolor sit amet, consectetur
+              adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+              dolore magna aliqua.” The purpose of lorem ipsum is to create a
+              natural looking block of text (sentence, paragraph, page, etc.)
+              that doesn't distract from the layout. A practice not without
+              controversy, laying out pages with meaningless filler text can be
+              very useful when the focus is meant to be on design, not content.
+              The passage experienced a surge in popularity during the 1960s
+              when Letraset used it on their dry-transfer sheets, and again
+              during the 90s as desktop publishers bundled the text with their
+              software. Today it's seen all around the web; on templates,
+              websites, and stock designs. Use our generator to get your own, or
+              read on for the authoritative history of lorem ipsum. Lorem ipsum,
+              or lipsum as it is sometimes known, is dummy text used in laying
+              out print, graphic or web designs. The passage is attributed to an
+              unknown typesetter in the 15th century who is thought to have
+              scrambled parts of Cicero's De Finibus Bonorum et Malorum for use
+              in a type specimen book. It usually begins with: “Lorem ipsum
+              dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.” The purpose of lorem
+              ipsum is to create a natural looking block of text (sentence,
+              paragraph, page, etc.) that doesn't distract from the layout. A
+              practice not without controversy, laying out pages with
+              meaningless filler text can be very useful when the focus is meant
+              to be on design, not content. The passage experienced a surge in
+              popularity during the 1960s when Letraset used it on their
+              dry-transfer sheets, and again during the 90s as desktop
+              publishers bundled the text with their software. Today it's seen
+              all around the web; on templates, websites, and stock designs. Use
+              our generator to get your own, or read on for the authoritative
+              history of lorem Lorem ipsum, or lipsum as it is sometimes known,
+              is dummy text used in laying out print, graphic or web designs.
+              The passage is attributed to an unknown typesetter in the 15th
+              century who is thought to have scrambled parts of Cicero's De
+              Finibus Bonorum et Malorum for use in a type specimen book. It
+              usually begins with: “Lorem ipsum dolor sit amet, consectetur
+              adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+              dolore magna aliqua.” The purpose of lorem ipsum is to create a
+              natural looking block of text (sentence, paragraph, page, etc.)
+              that doesn't distract from the layout. A practice not without
+              controversy, laying out pages with meaningless filler text can be
+              very useful when the focus is meant to be on design, not content.
+              The passage experienced a surge in popularity during the 1960s
+              when Letraset used it on their dry-transfer sheets, and again
+              during the 90s as desktop publishers bundled the text with their
+              software. Today it's seen all around the web; on templates,
+              websites, and stock designs. Use our generator to get your own, or
+              read on for the authoritative history of lorem ipsum. ipsum.
+            </Text>
+          </ScrollView>
         </View>
+        <AiIcon />
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  homeMenuTopItemBtnText: {
-    fontWeight: 'bold',
-    fontSize: 40,
-    color: 'white',
-  },
-  homeMenuTopItemBtn: {
-    borderWidth: 1,
-    width: '40%',
-    height: '30%',
-    marginTop: 10,
-    borderRadius: 30,
-    backgroundColor: '#2e188f',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  homeMenuTopItemText: {
-    fontWeight: 'bold',
-    fontSize: 40,
-  },
-  homeMenuTopItemNum: {
-    width: '60%',
-    height: '40%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  homeMenuTop: {
-    width: '100%',
-    height: '33.3%',
-    borderWidth: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  homeMenuMedium: {
-    width: '100%',
-    height: '33.3%',
-    borderWidth: 1,
-  },
-  homeMenuBottom: {
-    width: '100%',
-    height: '33.3%',
-    borderWidth: 1,
-  },
-  homePageView: {
-    width: '100%',
-    height: '100%',
-    flexDirection: 'column',
-  },
-  iconSetting: {
-    height: '6%',
-    width: '10%',
-    padding: 15,
-  },
-  iconBack: {
-    height: '40%',
-    width: '30%',
-    paddingRight: 10,
-  },
   areaView: {
     flex: 1,
-  },
-  topBarView: {
-    width: '100%',
-    height: '5%',
-    flexDirection: 'row',
-  },
-  back: {
-    width: '20%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  setting: {
-    width: '20%',
-    height: '100%',
-    marginLeft: '60%',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   container: {
     width: '100%',

@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   TouchableOpacity,
   ImageBackground,
@@ -11,17 +12,70 @@ import {
   SafeAreaView,
   TextInput,
   Image,
+  Alert,
 } from 'react-native';
+
 const Login = ({navigation}: any): JSX.Element => {
+  const URL = 'http://localhost:3030/login';
   const isDarkMode = useColorScheme() === 'dark';
   const [openEye, setOpenEye] = useState(true);
   const [secure, setSecure] = useState(true);
+  const [user_name, setUser_name] = useState('');
+  const [password, setPassword] = useState('');
+
   const handleSecurePass = () => {
     setSecure(!secure);
     setOpenEye(!openEye);
   };
-  const handleLogin = () => {
-    navigation.navigate('Tabs');
+  const handleLogin = async () => {
+    if (!user_name || !password) {
+      Alert.alert(
+        'WARNING!!',
+        'Username and Password not empty..!!',
+        [
+          {
+            text: 'Cancel',
+          },
+          {
+            text: 'OK',
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+    const user = {
+      user_name: user_name,
+      password: password,
+    };
+    await axios
+      .post(URL, user)
+      .then(async data => {
+        if (data.data?.success) {
+          console.log(data?.data?.token);
+          await AsyncStorage.setItem('user', JSON.stringify(data.data?.data));
+          await AsyncStorage.setItem('token', JSON.stringify(data.data?.token));
+
+          setPassword('');
+          navigation.navigate('Tabs');
+        } else {
+          Alert.alert(
+            'WARNING !!',
+            'Username or Password wrong...',
+            [
+              {
+                text: 'Cancel',
+              },
+              {
+                text: 'OK',
+              },
+            ],
+            {cancelable: false},
+          );
+        }
+      })
+      .catch((error: any) => {
+        console.log(error?.message);
+      });
   };
 
   return (
@@ -40,13 +94,20 @@ const Login = ({navigation}: any): JSX.Element => {
             {/* email */}
             <View style={styles.viewInput}>
               <Text style={styles.textMail}>Username </Text>
-              <TextInput style={styles.inputMail} keyboardType="default" />
+              <TextInput
+                value={user_name}
+                style={styles.inputMail}
+                keyboardType="default"
+                onChangeText={setUser_name}
+              />
             </View>
             {/* password */}
             <View style={styles.viewInput}>
               <Text style={styles.textPass}>Password </Text>
               <TextInput
+                onChangeText={setPassword}
                 keyboardType="default"
+                value={password}
                 secureTextEntry={secure}
                 style={styles.inputPass}
               />

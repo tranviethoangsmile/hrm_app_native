@@ -8,7 +8,8 @@ import Login from './login';
 import Home from './home';
 import Setting from './setting';
 import Profile from './profile';
-import Features from './features';
+import FeaturePage from './featuresPage';
+import CheckIn from './checkin';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -29,12 +30,24 @@ const TabMenu = (): JSX.Element => {
       />
       <Tab.Screen
         name="Features"
-        component={Features}
+        component={FeaturePage}
         options={{
           tabBarIcon: () => (
             <Image
               source={require('../images/features-icon.jpeg')}
               style={styles.icon}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="CheckIn"
+        component={CheckIn}
+        options={{
+          tabBarIcon: () => (
+            <Image
+              source={require('../images/checkin.png')}
+              style={styles.iconCheckIn}
             />
           ),
         }}
@@ -88,6 +101,15 @@ const Root = (): JSX.Element => {
 };
 
 const styles = StyleSheet.create({
+  iconCheckIn: {
+    width: 50,
+    height: 50,
+    tintColor: 'white',
+    backgroundColor: '#75c852',
+    position: 'absolute',
+    bottom: 10,
+    borderRadius: 40,
+  },
   icon: {
     width: 20,
     height: 20,

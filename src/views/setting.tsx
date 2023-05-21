@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import {
   View,
@@ -11,7 +12,8 @@ import {
 
 const Setting = ({navigation}: any): JSX.Element => {
   const isDarkMode = useColorScheme() === 'dark';
-  const handleback = () => {
+  const handleback = async () => {
+    await AsyncStorage.clear();
     navigation.navigate('Login');
   };
   return (

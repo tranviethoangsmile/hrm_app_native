@@ -2,12 +2,12 @@ import React from 'react';
 
 import {View, Text} from 'react-native';
 
-const Features = (): JSX.Element => {
+const CheckIn = (): JSX.Element => {
   return (
     <View>
-      <Text>Features Page</Text>
+      <Text>CheckIn Page</Text>
     </View>
   );
 };
 
-export default Features;
+export default CheckIn;
