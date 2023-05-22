@@ -9,7 +9,7 @@ import {
   Modal,
   Text,
   SafeAreaView,
-  Button,
+  LogBox,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -38,6 +38,7 @@ const Features = (): JSX.Element => {
     setFoods(newItems);
   }, []);
   useEffect(() => {
+    LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
     const handleUser = async () => {
       const data: any = await AsyncStorage.getItem('user');
       let value = await AsyncStorage.getItem('token');
@@ -92,6 +93,12 @@ const Features = (): JSX.Element => {
     } catch (error: any) {
       console.log('messgae: ', error?.message);
     }
+  };
+  const cancelOrderRequst = () => {
+    setCanteen_id('');
+    setFood_id('');
+    setSelectedDate(formattedDate);
+    setModalOrder(false);
   };
 
   return (
@@ -228,18 +235,30 @@ const Features = (): JSX.Element => {
                 <View>
                   <Text style={styles.labelText}>Date:</Text>
                   <DatePicker
-                    style={styles.dropDownPickerContainer}
                     date={selectedDate}
-                    mode="date"
+                    onDateChange={setSelectedDate}
                     confirmBtnText="Confirm"
                     cancelBtnText="Cancel"
-                    onDateChange={(date: any) => setSelectedDate(date)}
                   />
                 </View>
-                <Button title="click" onPress={handleOrderRequest} />
               </View>
             </View>
-            <View style={styles.orderModalViewFooter}></View>
+            <View style={styles.orderModalViewFooter}>
+              <View style={styles.orderBtnView}>
+                <TouchableOpacity
+                  onPress={handleOrderRequest}
+                  style={styles.orderBtn}>
+                  <Text style={styles.orderBtnText}>ORDER</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.cancelOrderBtnView}>
+                <TouchableOpacity
+                  style={styles.cancelOrderBtn}
+                  onPress={cancelOrderRequst}>
+                  <Text style={styles.cancelOrderBtnText}>CANCEL</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         </SafeAreaView>
       </Modal>
@@ -248,6 +267,36 @@ const Features = (): JSX.Element => {
 };
 
 const styles = StyleSheet.create({
+  cancelOrderBtnText: {color: 'white', fontSize: 16, fontWeight: 'bold'},
+  orderBtnText: {color: 'white', fontSize: 16, fontWeight: 'bold'},
+  cancelOrderBtn: {
+    backgroundColor: '#2196F3',
+    borderRadius: 8,
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  orderBtn: {
+    backgroundColor: '#2196F3',
+    borderRadius: 8,
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  cancelOrderBtnView: {
+    width: '50%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  orderBtnView: {
+    width: '50%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   dropDownPickerContainer: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -286,10 +335,11 @@ const styles = StyleSheet.create({
     height: '10%',
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
   },
   orderModalViewBody: {
     width: '100%',
-    height: '80%',
+    height: '90%',
     alignItems: 'center',
     justifyContent: 'center',
   },
