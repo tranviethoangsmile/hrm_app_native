@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -7,18 +7,21 @@ import {
   Image,
   ScrollView,
   TextInput,
-  ActivityIndicator,
   Alert,
 } from 'react-native';
 import axios from 'axios';
+import socket from '../socket/socketIO';
 
 const ChatAi = (): JSX.Element => {
-  const URL = 'http://localhost:3030';
-
-  const [respomse, setResponse] = useState<string | null>('');
-  const [preload, setPreload] = useState<boolean>(true);
+  const URL = 'http://192.168.1.32:3030';
   const [chat, setChat] = useState('');
-
+  const [chatHistory, setChatHistory] = useState('');
+  useEffect(() => {
+    socket.on('messgpt', handleMessage);
+  }, []);
+  const handleMessage = (message: any) => {
+    setChatHistory(prevHistory => prevHistory + message);
+  };
   const handelChatRequest = async () => {
     if (!chat) {
       Alert.alert(
@@ -36,14 +39,11 @@ const ChatAi = (): JSX.Element => {
       );
       return;
     }
-    setPreload(false);
-    const res = await axios.post(URL + '/chat', {
+    // setPreload(false);
+    await axios.post(URL + '/chat', {
       chat,
     });
-    if (res?.data?.success) {
-      setPreload(true);
-    }
-    setResponse(res?.data?.message);
+    setChatHistory('');
     setChat('');
   };
 
@@ -51,11 +51,7 @@ const ChatAi = (): JSX.Element => {
     <View style={styles.chatView}>
       <View style={styles.chatViewResponse}>
         <ScrollView>
-          {preload ? (
-            <Text style={styles.chatViewResponseText}>{respomse}</Text>
-          ) : (
-            <ActivityIndicator />
-          )}
+          <Text style={styles.chatViewResponseText}>{chatHistory}</Text>
         </ScrollView>
       </View>
       <View style={styles.chatViewRequest}>
@@ -78,7 +74,7 @@ const ChatAi = (): JSX.Element => {
           />
         </View>
         <View style={styles.chatViewRequestBtn}>
-          <TouchableOpacity disabled={!preload} onPress={handelChatRequest}>
+          <TouchableOpacity onPress={handelChatRequest}>
             <Image
               source={require('../images/send.png')}
               style={styles.chatViewRequestBtnIcon}

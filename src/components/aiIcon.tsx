@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Image,
@@ -10,30 +10,34 @@ import {
   SafeAreaView,
   TextInput,
   ScrollView,
-  ActivityIndicator,
 } from 'react-native';
-
+import socket from '../socket/socketIO';
 import axios from 'axios';
 
 const AiIcon = (): JSX.Element => {
-  const URL = 'http://localhost:3030/chat';
+  const URL = 'http://192.168.1.32:3030/chat';
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [respomse, setResponse] = useState<string | null>('');
-  const [preload, setPreload] = useState<boolean>(true);
   const [chat, setChat] = useState('');
+  const [chatHistory, setChatHistory] = useState('');
   const handleModal = () => {
     setModalVisible(!modalVisible);
+    setChatHistory('');
+    setChat('');
+  };
+
+  useEffect(() => {
+    socket.on('messgpt', handleGetMessage);
+  }, []);
+
+  const handleGetMessage = (message: any) => {
+    setChatHistory(preHistory => preHistory + message);
   };
   const handelChatRequest = async () => {
-    setPreload(false);
-    const res = await axios.post(URL, {
+    await axios.post(URL, {
       chat,
     });
-    if (res?.data?.success) {
-      setPreload(true);
-    }
-    setResponse(res?.data?.message);
+    setChatHistory('');
     setChat('');
   };
 
@@ -65,11 +69,8 @@ const AiIcon = (): JSX.Element => {
             <View style={styles.chat}>
               <View style={styles.chatView}>
                 <ScrollView>
-                  {preload ? (
-                    <Text style={styles.chatText}>{respomse}</Text>
-                  ) : (
-                    <ActivityIndicator />
-                  )}
+                  <Text>OpenAi:</Text>
+                  <Text style={styles.chatText}>{chatHistory}</Text>
                 </ScrollView>
               </View>
             </View>

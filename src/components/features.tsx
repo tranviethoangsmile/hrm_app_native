@@ -8,16 +8,18 @@ import {
   ScrollView,
   Modal,
   Text,
-  SafeAreaView,
   LogBox,
+  Button,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {format} from 'date-fns';
-import DatePicker from 'react-native-datepicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+
+const URL = 'http://192.168.1.8:3030';
 const Features = (): JSX.Element => {
-  const URL = 'http://localhost:3030';
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const today = new Date();
   const formattedDate = format(today, 'yyyy-MM-dd');
   const [selectedDate, setSelectedDate] = useState(formattedDate);
@@ -69,6 +71,17 @@ const Features = (): JSX.Element => {
       console.log('get out');
     };
   }, []);
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+  const handleConfirm = (date: any) => {
+    let order_date = format(date, 'yyyy-MM-dd');
+    setSelectedDate(order_date);
+    hideDatePicker();
+  };
   const handleOrderRequest = async () => {
     try {
       const data = {
@@ -90,8 +103,16 @@ const Features = (): JSX.Element => {
         },
       );
       console.log(response?.data);
+      if (response?.data.success) {
+        setCanteen_id('');
+        setFood_id('');
+        setSelectedDate(formattedDate);
+        setModalOrder(!modalOrder);
+      } else {
+        console.log('req fails');
+      }
     } catch (error: any) {
-      console.log('messgae: ', error?.message);
+      console.log('message: ', error?.message);
     }
   };
   const cancelOrderRequst = () => {
@@ -177,96 +198,102 @@ const Features = (): JSX.Element => {
         </View>
       </ScrollView>
       <Modal
+        style={styles.modal}
         visible={modalOrder}
         animationType="slide"
         presentationStyle="fullScreen"
         onRequestClose={() => {
           setModalOrder(false);
         }}>
-        <SafeAreaView>
-          <View style={styles.orderModalView}>
-            <View style={styles.orderModalViewHeader}>
-              <View style={styles.orderModalViewHeaderBackBtn}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalOrder(false);
-                  }}>
-                  <Image
-                    source={require('../images/back-icon.png')}
-                    style={styles.orderModalViewHeaderBackIcon}
-                  />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.orderModalViewHeaderTitle}>
-                <Text style={styles.orderModalViewHeaderTitleText}>
-                  Create Order
-                </Text>
-              </View>
+        <View style={styles.orderModalView}>
+          <View style={styles.orderModalViewHeader}>
+            <View style={styles.orderModalViewHeaderBackBtn}>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalOrder(false);
+                }}>
+                <Image
+                  source={require('../images/back-icon.png')}
+                  style={styles.orderModalViewHeaderBackIcon}
+                />
+              </TouchableOpacity>
             </View>
-            <View style={styles.orderModalViewBody}>
-              <View style={styles.orderModalViewBodyItems}>
-                <View style={styles.orderModalViewBodyItemsUp}>
-                  <Text style={styles.labelText}>Canteen:</Text>
-                  <DropDownPicker
-                    style={styles.dropDownPickerContainer}
-                    open={isOpen}
-                    setOpen={() => {
-                      setIsOpen(!isOpen);
-                    }}
-                    items={items}
-                    value={canteen_id}
-                    setValue={val => setCanteen_id(val)}
-                    maxHeight={100}
-                  />
-                </View>
-                <View style={styles.orderModalViewBodyItemsMidle}>
-                  <Text style={styles.labelText}>Food:</Text>
-                  <DropDownPicker
-                    open={isOpenFood}
-                    setOpen={() => {
-                      setIsOpenFood(!isOpenFood);
-                    }}
-                    items={foods}
-                    value={food_id}
-                    setValue={val => setFood_id(val)}
-                    maxHeight={100}
-                  />
-                </View>
-                <View>
-                  <Text style={styles.labelText}>Date:</Text>
-                  <DatePicker
-                    date={selectedDate}
-                    onDateChange={setSelectedDate}
-                    confirmBtnText="Confirm"
-                    cancelBtnText="Cancel"
-                  />
-                </View>
-              </View>
+            <View style={styles.orderModalViewHeaderTitle}>
+              <Text style={styles.orderModalViewHeaderTitleText}>
+                Create Order
+              </Text>
             </View>
-            <View style={styles.orderModalViewFooter}>
-              <View style={styles.orderBtnView}>
-                <TouchableOpacity
-                  onPress={handleOrderRequest}
-                  style={styles.orderBtn}>
-                  <Text style={styles.orderBtnText}>ORDER</Text>
-                </TouchableOpacity>
+          </View>
+          <View style={styles.orderModalViewBody}>
+            <View style={styles.orderModalViewBodyItems}>
+              <View style={styles.orderModalViewBodyItemsUp}>
+                <Text style={styles.labelText}>Canteen:</Text>
+                <DropDownPicker
+                  style={styles.dropDownPickerContainer}
+                  open={isOpen}
+                  setOpen={() => {
+                    setIsOpen(!isOpen);
+                  }}
+                  items={items}
+                  value={canteen_id}
+                  setValue={val => setCanteen_id(val)}
+                  maxHeight={100}
+                />
               </View>
-              <View style={styles.cancelOrderBtnView}>
-                <TouchableOpacity
-                  style={styles.cancelOrderBtn}
-                  onPress={cancelOrderRequst}>
-                  <Text style={styles.cancelOrderBtnText}>CANCEL</Text>
-                </TouchableOpacity>
+              <View style={styles.orderModalViewBodyItemsMidle}>
+                <Text style={styles.labelText}>Food:</Text>
+                <DropDownPicker
+                  open={isOpenFood}
+                  setOpen={() => {
+                    setIsOpenFood(!isOpenFood);
+                  }}
+                  items={foods}
+                  value={food_id}
+                  setValue={val => setFood_id(val)}
+                  maxHeight={100}
+                />
+              </View>
+              <View>
+                <Text style={styles.labelText}>Date:</Text>
+                <Text>{selectedDate}</Text>
+                <DateTimePickerModal
+                  isVisible={isDatePickerVisible}
+                  mode="date"
+                  onConfirm={handleConfirm}
+                  onCancel={hideDatePicker}
+                />
+                <Button title="Date" onPress={showDatePicker} />
               </View>
             </View>
           </View>
-        </SafeAreaView>
+          <View style={styles.orderModalViewFooter}>
+            <View style={styles.orderBtnView}>
+              <TouchableOpacity
+                onPress={handleOrderRequest}
+                style={styles.orderBtn}>
+                <Text style={styles.orderBtnText}>ORDER</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.cancelOrderBtnView}>
+              <TouchableOpacity
+                style={styles.cancelOrderBtn}
+                onPress={cancelOrderRequst}>
+                <Text style={styles.cancelOrderBtnText}>CANCEL</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </Modal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  modal: {
+    flex: 1,
+    position: 'absolute',
+    top: 10,
+  },
   cancelOrderBtnText: {color: 'white', fontSize: 16, fontWeight: 'bold'},
   orderBtnText: {color: 'white', fontSize: 16, fontWeight: 'bold'},
   cancelOrderBtn: {

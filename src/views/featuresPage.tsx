@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, {useEffect} from 'react';
 import {
   View,
   SafeAreaView,
@@ -10,9 +11,11 @@ import TopBarInfo from '../components/topBarInfo';
 import AiIcon from '../components/aiIcon';
 import ChatAi from '../components/chatAi';
 import Features from '../components/features';
-const FeaturePage = (): JSX.Element => {
+const FeaturePage = ({navigation}: any): JSX.Element => {
   const isDarkMode = useColorScheme() === 'dark';
-
+  useEffect(() => {
+    return console.log('get out Feature');
+  }, []);
   return (
     <SafeAreaView style={styles.areaView}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />

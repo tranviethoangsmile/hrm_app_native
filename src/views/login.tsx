@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -14,9 +15,9 @@ import {
   Image,
   Alert,
 } from 'react-native';
-
+import socket from '../socket/socketIO';
+const URL = 'http://192.168.1.32:3030';
 const Login = ({navigation}: any): JSX.Element => {
-  const URL = 'http://localhost:3030/login';
   const isDarkMode = useColorScheme() === 'dark';
   const [openEye, setOpenEye] = useState(true);
   const [secure, setSecure] = useState(true);
@@ -47,35 +48,33 @@ const Login = ({navigation}: any): JSX.Element => {
       user_name: user_name,
       password: password,
     };
-    await axios
-      .post(URL, user)
-      .then(async data => {
-        if (data.data?.success) {
-          console.log(data?.data?.token);
-          await AsyncStorage.setItem('user', JSON.stringify(data.data?.data));
-          await AsyncStorage.setItem('token', JSON.stringify(data.data?.token));
-
-          setPassword('');
-          navigation.navigate('Tabs');
-        } else {
-          Alert.alert(
-            'WARNING !!',
-            'Username or Password wrong...',
-            [
-              {
-                text: 'Cancel',
-              },
-              {
-                text: 'OK',
-              },
-            ],
-            {cancelable: false},
-          );
-        }
-      })
-      .catch((error: any) => {
-        console.log(error?.message);
-      });
+    try {
+      const log = await axios.post(URL + '/login', user);
+      const us: any = log?.data?.data?.id;
+      if (log.data?.success) {
+        await AsyncStorage.setItem('user', JSON.stringify(log.data?.data));
+        await AsyncStorage.setItem('token', JSON.stringify(log.data?.token));
+        setPassword('');
+        socket.emit('info', {us});
+        navigation.navigate('Tabs');
+      } else {
+        Alert.alert(
+          'WARNING !!',
+          'Username or Password wrong...',
+          [
+            {
+              text: 'Cancel',
+            },
+            {
+              text: 'OK',
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
   };
 
   return (
