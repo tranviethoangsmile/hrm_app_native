@@ -66,7 +66,6 @@ const ChatAi = (): JSX.Element => {
         <View style={styles.chatViewRequestInput}>
           <TextInput
             multiline={true}
-            numberOfLines={2}
             value={chat}
             onChangeText={setChat}
             placeholder="message here..."
