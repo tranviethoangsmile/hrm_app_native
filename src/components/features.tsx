@@ -90,7 +90,6 @@ const Features = (): JSX.Element => {
         food_id: food_id,
         date: selectedDate,
       };
-      console.log(token);
       const response = await axios.post(
         URL + '/order',
         {
@@ -102,7 +101,6 @@ const Features = (): JSX.Element => {
           },
         },
       );
-      console.log(response?.data);
       if (response?.data.success) {
         setCanteen_id('');
         setFood_id('');

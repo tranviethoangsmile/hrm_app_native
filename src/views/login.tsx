@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -14,16 +13,20 @@ import {
   TextInput,
   Image,
   Alert,
+  Modal,
 } from 'react-native';
 import socket from '../socket/socketIO';
-const URL = 'http://192.168.1.32:3030';
+const URL = 'http://192.168.0.108:3030';
 const Login = ({navigation}: any): JSX.Element => {
   const isDarkMode = useColorScheme() === 'dark';
   const [openEye, setOpenEye] = useState(true);
   const [secure, setSecure] = useState(true);
   const [user_name, setUser_name] = useState('');
   const [password, setPassword] = useState('');
-
+  const [nippouModal, setNippouModal] = useState(false);
+  const handleNippouModal = () => {
+    setNippouModal(!nippouModal);
+  };
   const handleSecurePass = () => {
     setSecure(!secure);
     setOpenEye(!openEye);
@@ -142,13 +145,88 @@ const Login = ({navigation}: any): JSX.Element => {
               </TouchableOpacity>
             </View>
           </View>
+          <View style={styles.btnNippou}>
+            <TouchableOpacity onPress={handleNippouModal}>
+              <Text style={styles.buttonText}>日報計算</Text>
+            </TouchableOpacity>
+          </View>
         </View>
+        <Modal
+          visible={nippouModal}
+          animationType="slide"
+          presentationStyle="fullScreen"
+          onRequestClose={() => {
+            setNippouModal(false);
+          }}>
+          <View style={styles.modalView}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.headerText}>日報</Text>
+            </View>
+            <View style={styles.modalBody}>
+              <Text>BOdy</Text>
+            </View>
+            <View style={styles.bottomCancelButton}>
+              <TouchableOpacity onPress={handleNippouModal}>
+                <Text style={styles.cancelButton}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  btnNippou: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    width: '100%',
+    borderRadius: 20,
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  modalBody: {
+    width: '100%',
+    height: '90%',
+  },
+  modalHeader: {
+    width: '100%',
+    height: '5%',
+    backgroundColor: '#2d7daf',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bottomCancelButton: {
+    marginBottom: 0,
+    width: '100%',
+    backgroundColor: '#93ad89',
+    height: '5%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    width: '100%',
+    height: '100%',
+  },
+  cancelButton: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#023E8A',
+  },
+  NippouButtonView: {
+    color: 'red',
+    fontSize: 18,
+  },
+  NippouButton: {
+    width: '40%',
+    height: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   logoTextUp: {
     fontSize: 30,
     fontWeight: '800',
