@@ -17,7 +17,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import {format} from 'date-fns';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-const URL = 'http://192.168.1.8:3030';
+const URL = 'http://192.168.0.108:3030';
 const Features = (): JSX.Element => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const today = new Date();

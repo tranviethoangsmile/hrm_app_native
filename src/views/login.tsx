@@ -14,7 +14,9 @@ import {
   Image,
   Alert,
   Modal,
+  ScrollView,
 } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
 import socket from '../socket/socketIO';
 const URL = 'http://192.168.0.108:3030';
 const Login = ({navigation}: any): JSX.Element => {
@@ -24,6 +26,24 @@ const Login = ({navigation}: any): JSX.Element => {
   const [user_name, setUser_name] = useState('');
   const [password, setPassword] = useState('');
   const [nippouModal, setNippouModal] = useState(false);
+  const [isOpenProductList, setIsOpenProductList] = useState(false);
+  const [isValue, setIsValue] = useState<string>('');
+  const [isATime, setIsATime] = useState<string>('');
+  const [isBTime, setIsBTime] = useState<string>('');
+  const [isWorkingTime, setIsWorkingTime] = useState<string>('');
+  const [isPercent, setIsPercent] = useState<number>(0);
+  const [isQuanlity, setIsQuanlity] = useState<string>('');
+  const listProduct = [
+    {label: '66', value: '1.08'},
+    {label: '05k RR', value: '0.81'},
+    {label: '05k FR', value: '0.85'},
+    {label: '042', value: '1.09'},
+    {label: 'D93F', value: '0.82'},
+    {label: '14k RR', value: '1'},
+    {label: '14k FR', value: '0.8'},
+    {label: '67E', value: '0.80'},
+    {label: '84N', value: '1.13'},
+  ];
   const handleNippouModal = () => {
     setNippouModal(!nippouModal);
   };
@@ -79,7 +99,14 @@ const Login = ({navigation}: any): JSX.Element => {
       console.log(error.message);
     }
   };
-
+  const handleCalculate = () => {
+    const total =
+      ((parseFloat(isQuanlity) * parseFloat(isValue)) /
+        (parseFloat(isWorkingTime) -
+          (parseFloat(isATime) + parseFloat(isBTime)))) *
+      100;
+    setIsPercent(parseFloat(total.toFixed(2)));
+  };
   return (
     <ImageBackground
       style={styles.container}
@@ -163,7 +190,106 @@ const Login = ({navigation}: any): JSX.Element => {
               <Text style={styles.headerText}>日報</Text>
             </View>
             <View style={styles.modalBody}>
-              <Text>BOdy</Text>
+              <ScrollView>
+                <View style={styles.productListView}>
+                  <View>
+                    <Text>Product:</Text>
+                  </View>
+                  <View>
+                    <DropDownPicker
+                      listMode="SCROLLVIEW"
+                      scrollViewProps={{
+                        decelerationRate: 'fast',
+                      }}
+                      maxHeight={200}
+                      open={isOpenProductList}
+                      setOpen={() => {
+                        setIsOpenProductList(!isOpenProductList);
+                      }}
+                      items={listProduct}
+                      modalAnimationType="slide"
+                      autoScroll={false}
+                      value={isValue}
+                      setValue={val => {
+                        setIsValue(val);
+                      }}
+                    />
+                  </View>
+                </View>
+                <View style={styles.quantityView}>
+                  <View>
+                    <Text style={styles.infoText}>Quanlity</Text>
+                  </View>
+                  <View>
+                    <TextInput
+                      style={styles.textInputInfo}
+                      value={isQuanlity}
+                      onChangeText={val => {
+                        setIsQuanlity(val);
+                      }}
+                      keyboardType="default"
+                    />
+                  </View>
+                </View>
+                <View style={styles.productListView}>
+                  <View>
+                    <Text style={styles.infoText}>A Time</Text>
+                  </View>
+                  <View>
+                    <TextInput
+                      style={styles.textInputInfo}
+                      value={isATime}
+                      onChangeText={val => {
+                        setIsATime(val);
+                      }}
+                      keyboardType="default"
+                    />
+                  </View>
+                </View>
+                <View style={styles.productListView}>
+                  <View>
+                    <Text style={styles.infoText}>B Time</Text>
+                  </View>
+                  <View>
+                    <TextInput
+                      style={styles.textInputInfo}
+                      value={isBTime}
+                      onChangeText={val => {
+                        setIsBTime(val);
+                      }}
+                      keyboardType="default"
+                    />
+                  </View>
+                </View>
+                <View style={styles.productListView}>
+                  <View>
+                    <Text style={styles.infoText}>Working Time</Text>
+                  </View>
+                  <View>
+                    <TextInput
+                      style={styles.textInputInfo}
+                      value={isWorkingTime}
+                      onChangeText={val => {
+                        setIsWorkingTime(val);
+                      }}
+                      keyboardType="default"
+                    />
+                  </View>
+                </View>
+                <View>
+                  <View>
+                    <Text style={styles.infoText}>Percent</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.infoText}>{isPercent} %</Text>
+                  </View>
+                </View>
+                <View style={styles.calculateBtn}>
+                  <TouchableOpacity onPress={handleCalculate}>
+                    <Text style={styles.infoText}>Calculate</Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
             </View>
             <View style={styles.bottomCancelButton}>
               <TouchableOpacity onPress={handleNippouModal}>
@@ -178,6 +304,36 @@ const Login = ({navigation}: any): JSX.Element => {
 };
 
 const styles = StyleSheet.create({
+  textInputInfo: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+    fontSize: 20,
+    color: 'black',
+  },
+  calculateBtn: {
+    marginTop: 5,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  infoText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'black',
+    borderBottomWidth: 1,
+  },
+  quantityView: {
+    marginTop: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  productListView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   btnNippou: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -191,7 +347,7 @@ const styles = StyleSheet.create({
   },
   modalBody: {
     width: '100%',
-    height: '90%',
+    Height: '100%',
   },
   modalHeader: {
     width: '100%',
