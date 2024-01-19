@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import socket from '../socket/socketIO';
-const URL = 'http://192.168.0.108:3030';
+const URL = 'http://192.168.0.101:4000';
 const Login = ({navigation}: any): JSX.Element => {
   const isDarkMode = useColorScheme() === 'dark';
   const [openEye, setOpenEye] = useState(true);

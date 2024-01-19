@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 
-const URL = 'http://192.168.0.108:3030';
+const URL = 'http://192.168.0.101:4000';
 const socket = io(URL);
 socket.on('connect', () => {
   console.log('Connected to server');

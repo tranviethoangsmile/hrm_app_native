@@ -13,7 +13,7 @@ import axios from 'axios';
 import socket from '../socket/socketIO';
 
 const ChatAi = (): JSX.Element => {
-  const URL = 'http://192.168.0.108:3030';
+  const URL = 'http://192.168.0.101:4000';
   const [chat, setChat] = useState('');
   const [chatHistory, setChatHistory] = useState('');
   useEffect(() => {
